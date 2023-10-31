@@ -1,0 +1,20 @@
+textarea {
+    border:1px solid var(--third);
+  resize: none;
+  width: 100%;
+  outline: none;
+  background: black;
+  color: var(--primary);
+  padding: 0.5rem;
+}
+
+button{
+    border:1px solid var(--third);
+    background: var(--fourth);
+    color: var(--primary);
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+}
+button:hover{
+    filter: brightness(0.8);
+}

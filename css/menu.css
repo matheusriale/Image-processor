@@ -1,0 +1,68 @@
+ul.menu {
+  width: 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.menu li:not(.submenu li) {
+  width: 60px;
+  box-sizing: border-box;
+  position: relative;
+  padding: 1rem;
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.menu li:hover:not(.submenu li) {
+  background: var(--fourth);
+}
+
+nav {
+  width: max-content;
+  background: var(--third);
+  height: 100%;
+}
+
+.menu i {
+  font-size: 30px;
+  color: var(--primary);
+}
+
+.submenu {
+  display: none;
+  top: 0;
+  left: 60px;
+  position: absolute;
+  background: var(--secondary);
+}
+.submenu li {
+  list-style: none;
+}
+
+.submenu li button {
+  color: var(--fourth);
+  width: max-content;
+  cursor: pointer;
+  border: none;
+  padding: 0.7rem;
+  background: none;
+  font-size: 16px;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+.submenu li button:hover,
+.submenu li:hover {
+  background: var(--primary);
+  filter: none;
+}
+
+.submenu li button label {
+  cursor: pointer;
+}

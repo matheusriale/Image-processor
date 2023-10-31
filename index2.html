@@ -1,0 +1,378 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Processamento de Imagens</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/menu.css" />
+    <link rel="stylesheet" href="css/modal.css" />
+    <link rel="stylesheet" href="css/input.css" />
+    <script src="script/menu.js"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  </head>
+  <body>
+    <nav>
+      <ul class="menu">
+        <li onclick="openSubmenu('file')">
+          <i class="ph ph-file"> </i>
+          <div class="submenu" id="file">
+            <ul>
+              <li>
+                <button>
+                  <label for="upload">Upload</label
+                  ><input id="upload" type="file" onchange="upload(event)" />
+                </button>
+              </li>
+              <li><button onclick="download()"><a id="downloadFile">Download</a></button></li>
+            </ul>
+          </div>
+        </li>
+
+        <li onclick="openSubmenu('transformations')">
+          <i class="ph ph-selection-foreground"> </i>
+          <div class="submenu" id="transformations">
+            <ul>
+              <li><button onclick="undo()">Undo</button></li>
+              <li><button onclick="rgb2gray()">Grayscale</button></li>
+              <li>
+                <button onclick="rgb2grayWeighted()">
+                  To grayscale (Weighted)
+                </button>
+              </li>
+              <li><button onclick="toNegative()">To negative</button></li>
+              <li>
+                <button onclick="logTransformation()">
+                  Logarithmic transform
+                </button>
+              </li>
+              <li><button onclick="openModal('piecewiseModal')">Piecewise Linear</button></li>
+
+              <li>
+                <div id="gammabox">
+                  <label for="gamma">Gamma Transformation</label
+                  ><input
+                    id="gamma"
+                    type="number"
+                    min="0"
+                    onchange="gammaTransformation(event.target.value)"
+                    step=".25"
+                  />
+                </div>
+              </li>
+              <li>
+                <div id="thresholding">
+                  <label for="thresholding">Thresholding</label
+                  ><input
+                    id="thresholding"
+                    type="number"
+                    min="0"
+                    onchange="thresholding(event.target.value)"
+                    step="10.0"
+                  />
+                </div>
+              </li>
+
+              <li><button onclick="sepia()">Sepia</button></li>
+              <li>
+                <button>
+                  <label for="chromakey">Chroma Key</label
+                  ><input
+                    id="chromakey"
+                    type="file"
+                    onchange="uploadChromaKey(event)"
+                  />
+                  <input id="distCK" type="number" min="0" step="5.0" />
+                </button>
+              </li>
+              <li>
+                <button>
+                  <label for="scale">Linear Scale</label>
+                  <input id="scale" type="number" min="0" step="0.1" onchange="scaleBilinear(event.target.value)"/>
+                </button>
+              </li>
+              <li>
+                <button>
+                  <label for="scale">Nearest Neighbor Interpolation Scale</label>
+                  <input id="scale" type="number" min="0" step="0.1" onchange="scaleNearest(event.target.value)"/>
+                </button>
+              </li>
+              <li>
+                <button>
+                <label for="rotation">Bilinear Rotation</label>
+                <input id="scale" type="number" min="0" step="10" onchange="rotationBilinear(event.target.value)"/>
+                </button>
+              </li>
+              <li>
+                <button>
+                <label for="rotation">Nearest Neighbor Rotation</label>
+                <input id="scale" type="number" min="0" step="10" onchange="rotationNearest(event.target.value)"/>
+              </button>
+              </li>
+            </ul>
+          </div>
+        </li>
+        <li onclick="openSubmenu('convolutions')">
+          <i class="ph ph-corners-out"></i>
+          <div class="submenu" id="convolutions">
+            <ul>              
+              <li>
+              <button onclick="callConvolutionMean(0)">
+                Convolution Mean
+                <input id="convMean" type="number" min="3" max="9" step="2.0" value="3"/>
+              </button>
+            </li>
+              <li>
+                <button onclick="callConvolutionMedian(1)">
+                  Convolution Median
+                  <input id="convMedian" type="number" min="3" max="9" step="2.0" value="3" />
+                </button>
+              </li>
+              <li>
+                <button onclick="callConvolutionGauss(2)">
+                  Convolution Gauss
+                  <input id="convGauss" type="number" min="3" max="9" step="2.0" value="3"/>
+                </button>
+              </li>
+              <li>
+                <button onclick="callConvolutionLaplace(3)">
+                  Convolution Laplace
+                  <input id="convLaplace" type="number" min="3" max="9" step="2.0" value="3"/>
+                </button>
+              </li>
+              <li>
+                <button onclick="callConvolutionSLaplace(4)">
+                  Sharpening Laplace
+                  <input id="convSLaplace" type="number" min="3" max="9" step="2.0" value="3"/>
+                </button>
+              </li>
+              <li>
+                <button onclick="callConvolutionHighBoost(5)">
+                  High-boost
+                  <input id="convHighBoost" type="number" min="3" max="9" step="2.0" value="3"/>
+                </button>
+              </li>
+              <li>
+                <button onclick="callConvolutionSobelX(6)">
+                  Sobel X
+                  <input id="convSobelX" type="number" min="3" max="9" step="2.0" value="3"/>
+                </button>
+              </li>
+
+              <li>
+                <button onclick="callConvolutionSobelY(7)">
+                  Sobel Y
+                  <input id="convSobelY" type="number" min="3" max="9" step="2.0" value="3"/>
+                </button>
+              </li>
+
+              <li>
+                <button onclick="callConvolutionBorderD(8)">
+                  Border detection gradient
+                  <input id="convBorderD" type="number" min="3" max="9" step="2.0" value="3"/>
+                </button>
+              </li>
+              <li><button onclick="openModal('kernelModal')">Convolution Generic Kernel</button></li>
+            </ul>
+          </div>
+        </li>
+
+        <li onclick="openSubmenu('steganography')">
+          <i class="ph ph-qr-code"></i>
+          <div class="submenu" id="steganography">
+            <ul>
+              <li>
+                <button onclick="openModal('steganographyModal')">
+                  Encrypt
+                </button>
+              </li>
+              <li><button onclick="decrypt()">Decrypt</button></li>
+            </ul>
+          </div>
+        </li>
+
+        <li onclick="openSubmenu('colors')">
+          <i class="ph ph-palette"></i>
+          <div class="submenu" id="colors">
+            <ul>
+              <li>
+                <button onclick="histEqualize()">Histogram Equalize RGB</button>
+              </li>
+              <li>
+                <button onclick="histEqualizeHSI()">Histogram Equalize HSI</button>
+              </li>
+              <li>
+                <button onclick="openModal('histograms')">Histograms RGBI</button>
+              </li>
+              <li>
+                <button onclick="openModal('rgbToHSVModal')">RGB<->HSV</button>
+              </li>
+              <li>
+                <button onclick="openModal('adjustHSLModal')">
+                  Adjust HSL 
+                </button>
+              </li>
+              <li>
+                <button onclick="openModal('modalRGBCMY')">
+                  RGB/CMY Adjust
+                </button>
+              </li>
+            </ul>
+          </div>
+        </li>
+      </ul>
+    </nav>
+
+    <main>
+      <section><canvas id="image"></canvas></section>
+    </main>
+
+    <div class="modal" id="steganographyModal">
+      <div class="content">
+        <h2>Steganography encrypt</h2>
+        <textarea
+          id="steganographyMessage"
+          placeholder="Digite uma mensagem:"
+          rows="8"
+        ></textarea>
+        <div class="buttons">
+          <button onclick="closeModal()">Cancel</button>
+          <button onclick="encrypt()">Encrypt</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" id="piecewiseModal">
+      <div class="content">
+        <h2>Piecewise Linear</h2>
+        <canvas id = "graph" width = "300" height = "300"></canvas>
+        <div class="buttons">
+          <button onclick="closeModal()">Cancel</button>
+          
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" id="kernelModal">
+      <div class="content">
+        <h2>Apply generic kernel</h2>
+        <textarea
+          id="genericKernelArray"
+          placeholder="Digite o kernel:"
+          rows="5"
+        >[0,0,0,
+ 0,0,0,
+ 0,0,0] </textarea>
+        <div class="buttons">
+          <button onclick="closeModal()">Cancel</button>
+          <button onclick="genericKernel()">Apply</button>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="modal" id="steganographyModalDecrypt">
+      <div class="content">
+        <h2>Decrypted message</h2>
+        <p id="steganographyDecrypt"></p>
+        <div class="buttons">
+          <button onclick="closeModal()">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" id="histograms">
+      <div class="content">
+        <h2>Histograms R,G,B and I </h2>
+        <div class="labels">
+          <div>
+            <canvas id = "histogramR" width = "150" height = "150"></canvas>
+          </div>
+          <div>
+            <canvas id = "histogramG" width = "150" height = "150"></canvas>
+          </div>
+          <div>
+            <canvas id = "histogramB" width = "150" height = "150"></canvas>
+          </div>
+          <div>
+            <canvas id = "histogramI" width = "150" height = "150"></canvas>
+          </div>
+        </div>
+
+        <div class="buttons">
+          <button onclick="closeModal()">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" id="rgbToHSVModal">
+      <div class="content">
+        <h2>RGB<->HSV</h2>
+        <div id="color-hsv"></div>
+        <div class="labels">
+          <div>
+            <div><label for="rRGB">R</label><input type="input" id="rRGB" name="rRGB" min="0" max="255" value="0" /></div>
+            <div><label for="gRGB">G</label><input type="input" id="gRGB" name="gRGB" min="0.0" max="255.0" value="0"/></div>
+            <div><label for="bRGB">B</label><input type="input" id="bRGB" name="bRGB" min="0.0" max="255.0" value="0"/></div>
+          </div>
+          <div>
+            <div><label for="hueHSV">H</label><input type="input" id="hueHSV" name="hueHSV" min="0" max="360" value="0"/></div>
+            <div><label for="saturationHSV">S</label><input type="input" id="saturationHSV" name="saturationHSV" min="0" max="100" value="0"/></div>
+            <div><label for="valueHSV">V</label><input type="input" id="valueHSV" name="valueHSV" min="0" max="100" value="0"/></div>
+          </div>
+        </div>
+        <div class="buttons">
+          <button onclick="closeModal()">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+      <div class="modal" id="modalRGBCMY">
+        <div class="content">
+          <h2>RGB,CMY adjust</h2>
+          <div class="labels">
+            <div>
+              <div><label for="rAdjust">R</label><input type="range" id="rAdjust" name="rAdjust" min="0" max="255" value="0" onchange="adjustImageRGB()" step="5"/></div>
+              <div><label for="gAdjust">G</label><input type="range" id="gAdjust" name="gAdjust" min="0" max="255" value="0" onchange="adjustImageRGB()" step="5"/></div>
+              <div><label for="bAdjust">B</label><input type="range" id="bAdjust" name="bAdjust" min="0" max="255" value="0" onchange="adjustImageRGB()" step="5"/></div>
+            </div>
+            <div>
+              <div><label for="cAdjust" font-color = >C</label><input type="range" id="cAdjust" name="cAdjust" min="0" max="255" value="0" onchange="adjustImageCMY()" step="5"/></div>
+              <div><label for="mAdjust" font-color = >M</label><input type="range" id="mAdjust" name="mAdjust" min="0" max="255" value="0" onchange="adjustImageCMY()" step="5"/></div>
+              <div><label for="yAdjust" font-color = >Y</label><input type="range" id="yAdjust" name="yAdjust" min="0" max="255" value="0" onchange="adjustImageCMY()" step="5"/></div>
+            </div>
+          </div>
+          <div class="buttons">
+            <button onclick="closeModal()">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" id="adjustHSLModal">
+      <div class="content">
+        <h2>Adjust hue, saturation and brightness</h2>
+        <div><label for="hueAdjust" font-color = >HUE</label><input type="range" id="hueAdjust" name="hueAdjust" min="0" max="360" value="0" onchange="adjustImageHSL()"/></div>
+        <div><label for="saturationAdjust" font-color = >SATURATION</label><input type="range" id="saturationAdjust" name="saturationAdjust" min="0.0" max="1.0" value="0" onchange="adjustImageHSL()" step="0.05"/></div>
+        <div><label for="lightnessAdjust" font-color = >LIGHTNESS</label><input type="range" id="lightnessAdjust" name="lightnessAdjust" min="0.0" max="1.0" value="0" onchange="adjustImageHSL()" step="0.05"/></div>
+        <!-- <button onclick="rgbToHSL('64','0','128')">RGB TO HSL</button>
+        <button onclick="hslToRGB('0','0','0.75')">HSL TO RGB</button> -->
+        <div class="buttons">
+          <button onclick="closeModal()">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!--<script async src="opencv.js" type="text/javascript"></script>-->
+    <script src="script/histogram.js"></script>
+    <script src="script/spacialTransformations.js"></script>
+    <script src="script/fourier.js"></script>
+    <script src="script/graph.js"></script>
+    <script src="script/chromakey.js"></script>
+    <script src="script/convolutions.js"></script>
+    <script src="script/transformations.js"></script>
+    <script src="script/colors.js"></script>
+    <script src="script/steganography.js"></script>
+    <script src="script/upload.js"></script>
+    <script src="script/modal.js"></script>
+  </body>
+</html>
